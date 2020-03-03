@@ -1,0 +1,45 @@
+<div [ngSwitch]="question.controlType">
+    <div [formGroup]="form" class=" p-0 mx-2 my-4" >
+
+        <nz-form-item class="d-flex align-items-center breadcrumb" *ngSwitchCase="'textbox'">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired [nzFor]="question.key" class="font-weight-bold">{{question.label}}</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="question.label + ' is Required'" >
+                <input nz-input [id]="question.key" [formControlName]="question.key" [id]="question.key" [type]="question.type"/>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="d-flex align-items-center breadcrumb" *ngSwitchCase="'SelectMultiple'">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired [nzFor]="question.key" class="font-weight-bold">{{question.label}}</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="question.label + ' is Required'" >
+                <nz-select nzMode="multiple" nzPlaceHolder="Please select" [formControlName]="question.key" [id]="question.key" (ngModelChange)="updateUI()" >
+                    <nz-option *ngFor="let option of question.options" [nzLabel]="option.key" [nzValue]="option.value"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="d-flex align-items-center breadcrumb" *ngSwitchCase="'Age'">
+            <nz-form-label [nzSm]="6" [nzXs]="24" class="font-weight-bold">{{question.label}}</nz-form-label>
+
+            <div [formGroup] = "form.controls[question.key]" class="ant-col-14">
+                <div *ngFor="let child of question.children">
+                    <div  [ngSwitch]= "child.key">
+
+                    <nz-form-control *ngSwitchCase="'ageslide'" [nzErrorTip]="child.label + ' is Required'" >
+                        <nz-slider nzRange [formControlName]="child.key" [(ngModel)] = "child.value" ></nz-slider>
+                    </nz-form-control>
+
+                    <nz-form-control *ngSwitchCase="'ageswitch'"  [nzSm]="14" [nzXs]="24" [nzErrorTip]="child.label + 'is Required'" >
+                        <nz-switch [formControlName]="child.key" nzCheckedChildren="Included" nzUnCheckedChildren="Excluded"></nz-switch>
+                    </nz-form-control>
+                    
+
+                    </div>
+                </div>
+            </div>
+
+
+        </nz-form-item>
+
+    </div>
+
+</div>

@@ -1,0 +1,5 @@
+.main-menu-hover:hover {
+    border: solid !important;
+    border-width: 2px !important;
+    color: rgb(0, 21, 41) !important;
+}

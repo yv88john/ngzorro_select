@@ -1,0 +1,136 @@
+
+
+<div class="card my-3">
+    <div class="card-body">
+        <div class="row mx-2">
+            <div class="col-xl-9">
+                <div class="border">
+                    <div class="m-2">
+                        <div>
+                            <form nz-form (ngSubmit)="onSubmit()" [formGroup]="form">
+                                <div  *ngFor="let question of questions;let first = first; let last = last;let $i = index;">
+                                    <div [ngSwitch]="question.controlType">
+                                        <div  class=" p-0 mx-2 my-4" >
+                                    
+                                            <nz-form-item class="d-flex align-items-center breadcrumb" *ngSwitchCase="'textbox'">
+                                                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired [nzFor]="question.key" class="font-weight-bold">{{question.label}}</nz-form-label>
+                                                <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="question.label + ' is Required'" >
+                                                    <input nz-input [id]="question.key" [formControl] = "form.controls[question.key]"  [id]="question.key" [type]="question.type"/>
+                                                </nz-form-control>
+                                            </nz-form-item>
+                                    
+                                            <nz-form-item  class="d-flex align-items-center breadcrumb" *ngSwitchCase="'SelectMultiple'">
+                                                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired [nzFor]="question.key" class="font-weight-bold">{{question.label}}</nz-form-label>
+                                                <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="question.label + ' is Required'" >
+                                                    <nz-select nzMode="multiple" nzPlaceHolder="Please select" [formControl] = "form.controls[question.key]" [id]="question.key"  >
+                                                        <nz-option *ngFor="let option of question.options" [nzLabel]="option.key" [nzValue]="option.value"></nz-option>
+                                                    </nz-select>
+                                                </nz-form-control>
+                                            </nz-form-item>
+                                    
+                                            <nz-form-item class="d-flex align-items-center breadcrumb" *ngSwitchCase="'Age'">
+                                                <nz-form-label [nzSm]="6" [nzXs]="24" class="font-weight-bold">{{question.label}}</nz-form-label>
+                                    
+                                                <div [formGroup] = "form.controls[question.key]" class="ant-col-14">
+                                                    <div *ngFor="let child of question.children">
+                                                        <div  [ngSwitch]= "child.key">
+                                    
+                                                        <nz-form-control *ngSwitchCase="'ageslide'" [nzErrorTip]="child.label + ' is Required'" >
+                                                            <nz-slider nzRange [formControlName]="child.key" [(ngModel)] = "child.value" ></nz-slider>
+                                                        </nz-form-control>
+                                    
+                                                        <nz-form-control *ngSwitchCase="'ageswitch'"  [nzSm]="14" [nzXs]="24" [nzErrorTip]="child.label + 'is Required'" >
+                                                            <nz-switch [formControlName]="child.key" nzCheckedChildren="Included" nzUnCheckedChildren="Excluded"></nz-switch>
+                                                        </nz-form-control>
+                                                        
+                                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    
+                                    
+                                            </nz-form-item>
+                                    
+                                        </div>
+                                    
+                                    </div>
+                                    <p *ngIf = "!last" class="ml-3">And</p>
+                                </div>
+                            </form>
+                            <form>
+                            <div class="form-row d-flex">
+                                <nz-select class="mr-3 mr-auto col-6" nzMode="tags" nzPlaceHojlder="Add Attribute" [(ngModel)]="selectedAttribute" name="selectedAttribute" (ngModelChange) = "OnItemSelected($event)" >
+                                            <nz-option *ngFor="let option of listOfAttribute" [nzLabel]="option.label" [nzValue]="option.value" ></nz-option>
+                                </nz-select>
+                                <button [formGroup]="form" nz-button nztype="submit" (click)="test()">Save</button>
+                                </div>
+                            </form>
+
+
+                            <div *ngIf="payLoad" class="form-row">
+                            <strong>Saved the following values</strong><br>{{payLoad}}
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <nz-card class="my-2"  nzTitle="Estimated Audience Size" >
+                    <p>real time data</p>
+                    <p nzLoading>536 users</p>
+                    <p>Does not reflect</p>
+                </nz-card>
+                <nz-card class="my-2" nzTitle=" Summary" >
+                    <div *ngIf="!!form.controls['audiencename']  &&  !!form.controls['audiencename'].value">
+                        <ul>
+                            <li>Audience Name</li>
+                            <ul>
+                                <li>{{form.controls['audiencename'].value}}</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div *ngIf="!!form.controls['gender']  &&  !!form.controls['gender'].value">
+                        <ul>
+                            <li>Gender</li>
+                            <ul>
+                                <li *ngFor="let gender of form.controls['gender'].value">{{getGenderDesc(gender)}}</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div *ngIf="!!form.controls['country']  &&  !!form.controls['country'].value">
+                        <ul>
+                            <li>Country</li>
+                            <ul>
+                                <li *ngFor="let country of form.controls['country'].value">{{getCountryDesc(country)}}</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    
+                    <div *ngIf="!!form.controls['member']  &&  !!form.controls['member'].value">
+                        <ul>
+                            <li>Member</li>
+                            <ul>
+                                <li *ngFor="let member of form.controls['member'].value">{{member}}</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div *ngIf="!!form.controls['age']">
+                        <ul>
+                            <li>Age</li>
+                            <ul>
+                                <li>Min Age : {{form.controls['age']['controls']['ageslide']['value'][0]}}</li>
+                                <li>Max Age :  {{form.controls['age']['controls']['ageslide']['value'][1]}}</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </nz-card>
+            </div>
+        </div>
+    </div>
+  </div>
